@@ -1,0 +1,211 @@
+#Variables
+variables:
+  APP_VERSION: "3.0.2"
+
+  #Node and red specification 
+  NODE_RED_VERSION: "3.0.2"
+  NODE_VERSION: "18"
+  NODE_BUILD_NAME: "plcnext_nodered"
+
+  IMAGE_FILE_NAME: "nodered"
+
+  #arm env
+  ENV_FILE_ARM: "2152\/.env"
+
+  #x86 env
+  ENV_FILE_X86: "3152\/.env"
+
+  #Docker build ENV
+  IMAGE_NAME: "nodered"
+  IMAGE_DESTINATION: "plcnext/node-red"
+  IMAGE_TAG: ${NODE_RED_VERSION}
+  
+
+# Build stages
+stages:
+  - build 
+  - container
+
+
+build:armv7:
+  stage: build
+  image: 
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    #Replace NodeRed version from ENV
+    - sed -i 's/"node-red":.*$/"node-red":" '"${NODE_RED_VERSION}"'",/g' nodered-build/package.json
+    - sed -i 's/"node":.*$/"node":" '"${NODE_VERSION}"'"/g' nodered-build/package.json
+    - /kaniko/executor 
+      --context $CI_PROJECT_DIR/nodered-build
+      --dockerfile $CI_PROJECT_DIR/nodered-build/Dockerfile.custom
+      --destination ${IMAGE_NAME}:${IMAGE_TAG}
+      --build-arg ARCH=arm32v7
+      --build-arg NODE_VERSION=${NODE_VERSION}
+      --build-arg NODE_RED_VERSION=${NODE_RED_VERSION}
+      --build-arg OS=alpine 
+      --build-arg BUILD_DATE="$(date +"%Y-%m-%dT%H:%M:%SZ")" 
+      --build-arg TAG_SUFFIX=default 
+      --no-push
+      --customPlatform=linux/arm/v7
+      --tarPath ./${NODE_BUILD_NAME}-${CI_COMMIT_SHA}.tar
+    - gzip ./${NODE_BUILD_NAME}-${CI_COMMIT_SHA}.tar
+  allow_failure: false
+  when: always
+  tags:
+    - shared-runner-kubernetes
+    - multi-arc
+  artifacts:
+    name: "container_arm"
+    paths:
+    - ./plcnext_nodered-${CI_COMMIT_SHA}.tar.gz
+    expire_in: 10 minutes
+
+build:x86:
+  stage: build
+  image: 
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    #Replace NodeRed version from ENV
+    - sed -i 's/"node-red":.*$/"node-red":" '"${NODE_RED_VERSION}"'",/g' nodered-build/package.json
+    - sed -i 's/"node":.*$/"node":" '"${NODE_VERSION}"'"/g' nodered-build/package.json
+    - /kaniko/executor 
+      --context $CI_PROJECT_DIR/nodered-build
+      --dockerfile $CI_PROJECT_DIR/nodered-build/Dockerfile.custom
+      --destination ${IMAGE_NAME}:${IMAGE_TAG}
+      --build-arg ARCH=amd64
+      --build-arg NODE_VERSION=${NODE_VERSION}
+      --build-arg NODE_RED_VERSION=${NODE_RED_VERSION}
+      --build-arg OS=alpine 
+      --build-arg BUILD_DATE="$(date +"%Y-%m-%dT%H:%M:%SZ")" 
+      --build-arg TAG_SUFFIX=default 
+      --no-push
+      --customPlatform=linux/amd64
+      --tarPath ./${NODE_BUILD_NAME}-${CI_COMMIT_SHA}.tar
+    - gzip ./${NODE_BUILD_NAME}-${CI_COMMIT_SHA}.tar
+  allow_failure: false
+  when: always
+  tags:
+    - shared-runner-kubernetes
+    - multi-arc
+  artifacts:
+    name: "container_arm"
+    paths:
+    - ./plcnext_nodered-${CI_COMMIT_SHA}.tar.gz
+    expire_in: 10 minutes
+
+container:armv7:
+  stage: container
+  image:
+    name: ubuntu:22.04
+  needs: ["build:armv7"]
+  before_script:
+    #Update repos and install dependecies
+    - apt-get update
+    - apt-get install -y squashfs-tools rpm curl jq
+  script:
+    #Set ENV
+    - | 
+      if grep -q "IMAGE_NAME" ${ENV_FILE_ARM}; then 
+        sed -i 's|IMAGE_NAME.*|IMAGE_NAME='${IMAGE_NAME}'|g' ${ENV_FILE_ARM}
+      else 
+        sed -i -e '$a\IMAGE_NAME='${IMAGE_NAME}'' "${ENV_FILE_ARM}" 
+      fi
+    - |
+      if grep -q "IMAGE_TAG" ${ENV_FILE_ARM} ; then 
+        sed -i 's|IMAGE_TAG.*$|IMAGE_TAG='${IMAGE_TAG}'|g' ${ENV_FILE_ARM}
+      else 
+        sed -i -e '$a\IMAGE_TAG='${IMAGE_TAG} "${ENV_FILE_ARM}" 
+      fi
+    - |
+      if grep -q "IMAGE_FILE_NAME" ${ENV_FILE_ARM} ; then 
+        sed -i 's|IMAGE_FILE_NAME.*$|IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'|g' ${ENV_FILE_ARM}
+      else 
+        sed -i -e '$a\IMAGE_FILE_NAME='${IMAGE_FILE_NAME} "${ENV_FILE_ARM}" 
+      fi
+
+    - cp ./plcnext_nodered-${CI_COMMIT_SHA}.tar.gz 2152/images/${IMAGE_NAME}.tar.gz
+    - mkdir -p 2152/volumes/node-red
+    - sed -i 's/"version":.*$/"version":"'"${APP_VERSION}"'",/g' 2152/app_info.json
+    #Copy Settings
+    - cp -r ./data/* 2152/volumes/node-red
+    #Replace Windows style to Unix style for bash scripts
+    - sed -i -e 's/\r$//' 2152/initscript.sh
+    - chmod +x 2152/initscript.sh
+    - mksquashfs 2152 $IMAGE_NAME-${CI_COMMIT_SHORT_SHA}_ARMv7.app -force-uid 1001 -force-gid 1002
+  allow_failure: false
+  when: always
+  tags:
+    - shared-runner-kubernetes
+    - multi-arc
+  # cache:
+  #   key: kaniko-cache
+  #   paths:
+  #   - ./cache
+  dependencies:
+  -  build:armv7
+
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_COMMIT_SHORT_SHA}_armv7"
+    paths:
+      - ./*.app
+    when: on_success
+    expire_in: 1 Hour
+
+container:x86:
+  stage: container
+  image:
+    name: ubuntu:22.04
+  needs: ["build:x86"]
+  before_script:
+    #Update repos and install dependecies
+    - apt-get update
+    - apt-get install -y squashfs-tools rpm curl jq
+  script:
+    #Set ENV
+    - | 
+      if grep -q "IMAGE_NAME" ${ENV_FILE_X86}; then 
+        sed -i 's|IMAGE_NAME.*|IMAGE_NAME='${IMAGE_NAME}'|g' ${ENV_FILE_X86}
+      else 
+        sed -i -e '$a\IMAGE_NAME='${IMAGE_NAME}'' "${ENV_FILE_X86}" 
+      fi
+    - |
+      if grep -q "IMAGE_TAG" ${ENV_FILE_X86}; then 
+        sed -i 's|IMAGE_TAG.*$|IMAGE_TAG='${IMAGE_TAG}'|g' ${ENV_FILE_X86}
+      else 
+        sed -i -e '$a\IMAGE_TAG='${IMAGE_TAG} "${ENV_FILE_X86}" 
+      fi
+    - |
+      if grep -q "IMAGE_FILE_NAME" ${ENV_FILE_X86}; then 
+        sed -i 's|IMAGE_FILE_NAME.*$|IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'|g' ${ENV_FILE_X86}
+      else 
+        sed -i -e '$a\IMAGE_FILE_NAME='${IMAGE_FILE_NAME} "${ENV_FILE_X86}" 
+      fi
+    - mkdir -p 3152/volumes/node-red
+    #Copy Settings
+    - cp -r ./data/* 3152/volumes/node-red/
+    - cp ./plcnext_nodered-${CI_COMMIT_SHA}.tar.gz 3152/images/${IMAGE_NAME}.tar.gz
+    - mkdir -p 3152/volumes/node-red
+    - sed -i 's/"version":.*$/"version":"'"${APP_VERSION}"'",/g' 3152/app_info.json
+    #Replace Windows style to Unix style for bash scripts
+    - sed -i -e 's/\r$//' 3152/initscript.sh
+    - chmod +x 3152/initscript.sh
+    - mksquashfs 3152 $IMAGE_NAME-${CI_COMMIT_SHORT_SHA}_x86.app -force-uid 1001 -force-gid 1002
+  allow_failure: false
+  when: always
+  tags:
+    - shared-runner-kubernetes
+    - multi-arc
+  # cache:
+  #   key: kaniko-cache
+  #   paths:
+  #   - ./cache
+  dependencies:
+    - build:x86
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_COMMIT_SHORT_SHA}_x86"
+    paths:
+      - ./*.app
+    when: on_success
+    expire_in: 1 Hour

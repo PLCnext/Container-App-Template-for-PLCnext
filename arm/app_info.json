@@ -1,0 +1,24 @@
+{
+    "plcnextapp": {
+        "name": "IIoT Framework Node-RED Connector",
+        "identifier": "60002172000507",
+        "version": "1.0.0",
+        "target": "AXC F 2152",
+        "minfirmware_version": "22.0.0",
+        "manufacturer": "Phoenix Contact GmbH & Co. KG",
+	"licensetype": "Free"
+    },
+    "datastorage": {
+        "persistentdata": true,
+        "temporarydata": true
+    },
+     "linuxdaemons" :
+     [
+           {
+               "path": "/bin/IIoTGatewayConnector",
+               "cmdargs" : "",
+               "starttime": "99",
+               "initScriptTemplate": "initscript.sh"
+           }
+     ]
+}
