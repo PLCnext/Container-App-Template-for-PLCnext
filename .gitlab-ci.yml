@@ -1,31 +1,47 @@
 #Variables
 variables:
-  APP_VERSION: "3.0.2"
+  # Configuration for General App Description
+  # More information can be found on https://store.plcnext.help/st/PLCnext_App_Integration_Guide/Apps_parts/Example_of_a_complete_app_info.htm
+  # PLCNext App specification
+  APP_VERSION: "0.1"
+  MINFIRMWARE_VERSION: "22.0"
+  APP_NAME: "Template for PLCNext Apps"
+  LICENSE_TYPE: "Free"
+  MANUFACTOR: "Phoenix Contact GmbH & Co. KG"
 
-  #Node and red specification 
-  NODE_RED_VERSION: "3.0.2"
-  NODE_VERSION: "18"
-  NODE_BUILD_NAME: "plcnext_nodered"
+  # ENV for LinuxDeamons
+  LINUXDAEMON_PATH: "/bin/Template"
+
+  # ENV for ARM Architecture
+  IDENTIFIER_ARM: "60002172000510"
+  TARGET_ARM: "AXC F 2152"
+  
+  # ENV for x86 Architecture
+  IDENTIFIER_X86: "60002172000551"
+  TARGET_X86: "AXC F 3152,RFC 4072S,EPC 1502,EPC 1522,BPC 9102S"
+
+  # Container specification 
+  CONTAINER_TAG: "1.0"
+  CONTAINER_NAME: "template-plcnext"
 
   IMAGE_FILE_NAME: "nodered"
 
-  #arm env
-  ENV_FILE_ARM: "2152\/.env"
+  # arm env
+  ENV_FILE_ARM: "arm\/.env"
 
-  #x86 env
-  ENV_FILE_X86: "3152\/.env"
+  # x86 env
+  ENV_FILE_X86: "x86\/.env"
 
-  #Docker build ENV
-  IMAGE_NAME: "nodered"
-  IMAGE_DESTINATION: "plcnext/node-red"
-  IMAGE_TAG: ${NODE_RED_VERSION}
+  # Docker build ENV
+  IMAGE_NAME: "nginx"
+  IMAGE_DESTINATION: "plcnext/nginx"
+  IMAGE_TAG: ${CONTAINER_TAG}
   
 
 # Build stages
 stages:
   - build 
   - container
-
 
 build:armv7:
   stage: build
