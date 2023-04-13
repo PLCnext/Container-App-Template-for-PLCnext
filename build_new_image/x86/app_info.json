@@ -1,12 +1,12 @@
 {
     "plcnextapp": {
-        "name": "IIoT Framework Node-RED Connector",
-        "identifier": "60002172000551",
-        "version":"2.2.3",
-        "target": "AXC F 3152,RFC 4072S,EPC 1502,EPC 1522,BPC 9102S",
-        "minfirmware_version": "22.0.0",
-        "manufacturer": "Phoenix Contact GmbH & Co. KG",
-	"licensetype": "Free"
+        "name": "",
+        "identifier": "",
+        "version": "",
+        "target": "",
+        "minfirmware_version": "",
+        "manufacturer": "",
+	    "licensetype": ""
     },
     "datastorage": {
         "persistentdata": true,
@@ -15,7 +15,7 @@
      "linuxdaemons" :
      [
            {
-               "path": "/bin/IIoTGatewayConnector",
+               "path": "/bin/placeholder",
                "cmdargs" : "",
                "starttime": "99",
                "initScriptTemplate": "initscript.sh"
