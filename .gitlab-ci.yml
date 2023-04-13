@@ -163,7 +163,7 @@ container:x86:
     - apt-get install -y squashfs-tools rpm curl jq
   script:
     #Set ENV
-    - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_X86}' 'IMAGE_NAME'  "IMAGE_NAME='${IMAGE_NAME}'"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_NAME'  "IMAGE_NAME='${IMAGE_NAME}'"
     - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_X86}' 'IMAGE_TAG'  "IMAGE_TAG='${IMAGE_TAG}'"
     - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_X86}' 'IMAGE_FILE_NAME'  "IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'"
 
