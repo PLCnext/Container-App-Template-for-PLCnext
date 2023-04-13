@@ -116,34 +116,21 @@ container:arm32v7:
     - apt-get install -y squashfs-tools rpm curl jq
   script:
     #Set ENV
-    - | 
-      if grep -q "IMAGE_NAME" ${ENV_FILE_ARM}; then 
-        sed -i 's|IMAGE_NAME.*|IMAGE_NAME='${IMAGE_NAME}'|g' ${ENV_FILE_ARM}
-      else 
-        sed -i -e '$a\IMAGE_NAME='${IMAGE_NAME}'' "${ENV_FILE_ARM}" 
-      fi
-    - |
-      if grep -q "IMAGE_TAG" ${ENV_FILE_ARM} ; then 
-        sed -i 's|IMAGE_TAG.*$|IMAGE_TAG='${IMAGE_TAG}'|g' ${ENV_FILE_ARM}
-      else 
-        sed -i -e '$a\IMAGE_TAG='${IMAGE_TAG} "${ENV_FILE_ARM}" 
-      fi
-    - |
-      if grep -q "IMAGE_FILE_NAME" ${ENV_FILE_ARM} ; then 
-        sed -i 's|IMAGE_FILE_NAME.*$|IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'|g' ${ENV_FILE_ARM}
-      else 
-        sed -i -e '$a\IMAGE_FILE_NAME='${IMAGE_FILE_NAME} "${ENV_FILE_ARM}" 
-      fi
+    - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_ARM}' 'IMAGE_NAME'  "IMAGE_NAME='${IMAGE_NAME}'"
+    - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_ARM}' 'IMAGE_TAG'  "IMAGE_TAG='${IMAGE_TAG}'"
+    - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_ARM}' 'IMAGE_FILE_NAME'  "IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'"
 
-    - cp ./plcnext_nodered-${CI_COMMIT_SHA}.tar.gz 2152/images/${IMAGE_NAME}.tar.gz
-    - mkdir -p 2152/volumes/node-red
-    - sed -i 's/"version":.*$/"version":"'"${APP_VERSION}"'",/g' 2152/app_info.json
-    #Copy Settings
-    - cp -r ./data/* 2152/volumes/node-red
+    # Copy dependecies
+    - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/arm/images/${IMAGE_NAME}.tar.gz
+
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"version":'  '"version":"'"${APP_VERSION}"'
+    #Copy data and settings if you have something to copy
+    #- cp -r ./data/* dir
+
     #Replace Windows style to Unix style for bash scripts
-    - sed -i -e 's/\r$//' 2152/initscript.sh
-    - chmod +x 2152/initscript.sh
-    - mksquashfs 2152 $IMAGE_NAME-${CI_COMMIT_SHORT_SHA}_ARMv7.app -force-uid 1001 -force-gid 1002
+    - sed -i -e 's/\r$//' build_new_image/arm/initscript.sh
+    - chmod +x build_new_image/arm/initscript.sh
+    - mksquashfs build_new_image/arm ${IMAGE_NAME}-${CI_COMMIT_SHORT_SHA}_ARMv7.app -force-uid 1001 -force-gid 1002
   allow_failure: false
   when: always
   tags:
@@ -174,34 +161,21 @@ container:x86:
     - apt-get install -y squashfs-tools rpm curl jq
   script:
     #Set ENV
-    - | 
-      if grep -q "IMAGE_NAME" ${ENV_FILE_X86}; then 
-        sed -i 's|IMAGE_NAME.*|IMAGE_NAME='${IMAGE_NAME}'|g' ${ENV_FILE_X86}
-      else 
-        sed -i -e '$a\IMAGE_NAME='${IMAGE_NAME}'' "${ENV_FILE_X86}" 
-      fi
-    - |
-      if grep -q "IMAGE_TAG" ${ENV_FILE_X86}; then 
-        sed -i 's|IMAGE_TAG.*$|IMAGE_TAG='${IMAGE_TAG}'|g' ${ENV_FILE_X86}
-      else 
-        sed -i -e '$a\IMAGE_TAG='${IMAGE_TAG} "${ENV_FILE_X86}" 
-      fi
-    - |
-      if grep -q "IMAGE_FILE_NAME" ${ENV_FILE_X86}; then 
-        sed -i 's|IMAGE_FILE_NAME.*$|IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'|g' ${ENV_FILE_X86}
-      else 
-        sed -i -e '$a\IMAGE_FILE_NAME='${IMAGE_FILE_NAME} "${ENV_FILE_X86}" 
-      fi
-    - mkdir -p 3152/volumes/node-red
-    #Copy Settings
-    - cp -r ./data/* 3152/volumes/node-red/
-    - cp ./plcnext_nodered-${CI_COMMIT_SHA}.tar.gz 3152/images/${IMAGE_NAME}.tar.gz
-    - mkdir -p 3152/volumes/node-red
-    - sed -i 's/"version":.*$/"version":"'"${APP_VERSION}"'",/g' 3152/app_info.json
+    - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_X86}' 'IMAGE_NAME'  "IMAGE_NAME='${IMAGE_NAME}'"
+    - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_X86}' 'IMAGE_TAG'  "IMAGE_TAG='${IMAGE_TAG}'"
+    - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_X86}' 'IMAGE_FILE_NAME'  "IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'"
+
+    # Copy dependecies
+    - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/x86/images/${IMAGE_NAME}.tar.gz
+
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"version":'  '"version":"'"${APP_VERSION}"'
+    #Copy data and settings if you have something to copy
+    #- cp -r ./data/* dir
+
     #Replace Windows style to Unix style for bash scripts
-    - sed -i -e 's/\r$//' 3152/initscript.sh
-    - chmod +x 3152/initscript.sh
-    - mksquashfs 3152 $IMAGE_NAME-${CI_COMMIT_SHORT_SHA}_x86.app -force-uid 1001 -force-gid 1002
+    - sed -i -e 's/\r$//' build_new_image/x86/initscript.sh
+    - chmod +x build_new_image/x86/initscript.sh
+    - mksquashfs build_new_image/x86 ${IMAGE_NAME}-${CI_COMMIT_SHORT_SHA}_ARMv7.app -force-uid 1001 -force-gid 1002
   allow_failure: false
   when: always
   tags:
