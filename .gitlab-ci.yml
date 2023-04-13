@@ -164,11 +164,10 @@ container:x86:
   script:
     # Set Bash executable
     - chmod +x scripts/replace_or_add_string.sh
-    - ls -lha
     #Set ENV
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_NAME'  "IMAGE_NAME='${IMAGE_NAME}'"
-    - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_X86}' 'IMAGE_TAG'  "IMAGE_TAG='${IMAGE_TAG}'"
-    - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_X86}' 'IMAGE_FILE_NAME'  "IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_TAG'  "IMAGE_TAG='${IMAGE_TAG}'"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_FILE_NAME'  "IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'"
 
     # Copy dependecies
     - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/x86/images/${IMAGE_NAME}.tar.gz
