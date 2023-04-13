@@ -59,6 +59,7 @@ build:arm32v7:
       --build-arg ARCH=arm32v7
       --build-arg BUILD_DATE="$(date +"%Y-%m-%dT%H:%M:%SZ")" 
       --build-arg TAG_SUFFIX=default 
+      --build-arg OS=alpine 
       --no-push
       --customPlatform=linux/arm/v7
       --tarPath ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
@@ -88,6 +89,7 @@ build:x86:
       --build-arg ARCH=amd64
       --build-arg BUILD_DATE="$(date +"%Y-%m-%dT%H:%M:%SZ")" 
       --build-arg TAG_SUFFIX=default 
+      --build-arg OS=alpine 
       --no-push
       --customPlatform=linux/amd64
       --tarPath ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
