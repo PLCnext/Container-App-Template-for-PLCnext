@@ -2,8 +2,6 @@ version: "3.7"
 services:
   node-red:
     image: ${IMAGE_NAME}:${IMAGE_TAG}
-    ports:
-      - 51880:1880
     user: ${USER_ID}
     volumes:
       - ./volumes/node-red:/data

@@ -15,7 +15,7 @@
      "linuxdaemons" :
      [
            {
-               "path": "",
+               "path": "/bin/placeholder",
                "cmdargs" : "",
                "starttime": "99",
                "initScriptTemplate": "initscript.sh"

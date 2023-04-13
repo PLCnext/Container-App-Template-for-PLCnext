@@ -10,7 +10,7 @@ variables:
   MANUFACTOR: "Phoenix Contact GmbH & Co. KG"
 
   # ENV for LinuxDeamons
-  LINUXDAEMON_PATH: "/bin/Template"
+  LINUXDAEMON_PATH: "/bin/placeholder"
 
   # ENV for ARM Architecture
   IDENTIFIER_ARM: "60002172000510"
@@ -32,7 +32,7 @@ variables:
   # x86 env
   ENV_FILE_X86: "x86\/.env"
 
-  # Docker build ENV
+  # A Docker build ENV
   IMAGE_NAME: "nginx"
   IMAGE_DESTINATION: "plcnext/nginx"
   IMAGE_TAG: ${CONTAINER_TAG}
@@ -40,32 +40,29 @@ variables:
 
 # Build stages
 stages:
-  - build 
-  - container
+  - build_new_image
+  - container_new_image
+  - build_existing_image
+  - container_existing_image
 
-build:armv7:
-  stage: build
+build:arm32v7:
+  stage: build_new_image
   image: 
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
-    #Replace NodeRed version from ENV
-    - sed -i 's/"node-red":.*$/"node-red":" '"${NODE_RED_VERSION}"'",/g' nodered-build/package.json
-    - sed -i 's/"node":.*$/"node":" '"${NODE_VERSION}"'"/g' nodered-build/package.json
+    #Kaniko Executor to build image, its used here because of the easy and rootless integration
     - /kaniko/executor 
-      --context $CI_PROJECT_DIR/nodered-build
-      --dockerfile $CI_PROJECT_DIR/nodered-build/Dockerfile.custom
+      --context $CI_PROJECT_DIR/build_new_image/build
+      --dockerfile $CI_PROJECT_DIR/build_new_image/build/Dockerfile
       --destination ${IMAGE_NAME}:${IMAGE_TAG}
       --build-arg ARCH=arm32v7
-      --build-arg NODE_VERSION=${NODE_VERSION}
-      --build-arg NODE_RED_VERSION=${NODE_RED_VERSION}
-      --build-arg OS=alpine 
       --build-arg BUILD_DATE="$(date +"%Y-%m-%dT%H:%M:%SZ")" 
       --build-arg TAG_SUFFIX=default 
       --no-push
       --customPlatform=linux/arm/v7
-      --tarPath ./${NODE_BUILD_NAME}-${CI_COMMIT_SHA}.tar
-    - gzip ./${NODE_BUILD_NAME}-${CI_COMMIT_SHA}.tar
+      --tarPath ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
+    - gzip ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
   allow_failure: false
   when: always
   tags:
@@ -74,18 +71,16 @@ build:armv7:
   artifacts:
     name: "container_arm"
     paths:
-    - ./plcnext_nodered-${CI_COMMIT_SHA}.tar.gz
+    - ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz
     expire_in: 10 minutes
 
 build:x86:
-  stage: build
+  stage: build_new_image
   image: 
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   script:
     #Replace NodeRed version from ENV
-    - sed -i 's/"node-red":.*$/"node-red":" '"${NODE_RED_VERSION}"'",/g' nodered-build/package.json
-    - sed -i 's/"node":.*$/"node":" '"${NODE_VERSION}"'"/g' nodered-build/package.json
     - /kaniko/executor 
       --context $CI_PROJECT_DIR/nodered-build
       --dockerfile $CI_PROJECT_DIR/nodered-build/Dockerfile.custom
@@ -111,8 +106,8 @@ build:x86:
     - ./plcnext_nodered-${CI_COMMIT_SHA}.tar.gz
     expire_in: 10 minutes
 
-container:armv7:
-  stage: container
+container:arm32v7:
+  stage: container_new_image
   image:
     name: ubuntu:22.04
   needs: ["build:armv7"]
@@ -170,7 +165,7 @@ container:armv7:
     expire_in: 1 Hour
 
 container:x86:
-  stage: container
+  stage: container_new_image
   image:
     name: ubuntu:22.04
   needs: ["build:x86"]

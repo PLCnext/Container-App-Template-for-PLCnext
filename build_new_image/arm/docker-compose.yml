@@ -3,7 +3,7 @@ services:
   node-red:
     image: ${IMAGE_NAME}:${IMAGE_TAG}
     ports:
-      - 51880:1880
+      - ${OUTGRESS_PORT}:${INGRESS_PORT}
     user: ${USER_ID}
     volumes:
       - ./volumes/node-red:/data

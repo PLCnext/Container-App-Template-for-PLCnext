@@ -68,23 +68,19 @@ start ()
     # app is already installed and container exists
     # just start it
     echo "$NAME is already installed. podman will start it automatically" >> $APP_LOG
-    chown -R 1010 $APP_DATA_PATH/volumes/node-red
+
     chmod -R 777 $APP_DATA_PATH
     cd $APP_DATA_PATH
     
+    # Start UP Podman 
     podman-compose down
-
-    echo "Copy current certificates to Volumes for https usage" >> $APP_LOG
-    mkdir -p $APP_DATA_PATH/volumes/node-red/certificates
-    cp -r /opt/plcnext/Security/IdentityStores/HTTPS-self-signed/*.pem $APP_DATA_PATH/volumes/node-red/certificates
-
     podman-compose up -d
 
   else
     echo "$NAME is not installed --> load images and install" >> $APP_LOG
     echo "Copy content" >> $APP_LOG
     cp -r $APP_PATH "$APP_HOME/data"
-    chown -R 1010 $APP_DATA_PATH/volumes/node-red
+
     chmod -R 777 $APP_DATA_PATH 
 
     echo "Load images" >> $APP_LOG
@@ -93,18 +89,6 @@ start ()
     then
       stop
       echo "$(date): Wasn't able to load  ${IMAGE_FILE_NAME}." >> $APP_LOG
-      exit 201
-    fi
-
-    echo "Copy Certificates to Volumes for https usage" >> $APP_LOG
-    mkdir -p $APP_DATA_PATH/volumes/node-red/certificates
-    cp -r /opt/plcnext/Security/IdentityStores/HTTPS-self-signed/*.pem $APP_DATA_PATH/volumes/node-red/certificates
-    chown -R 1010 $APP_DATA_PATH/volumes/node-red
-    chmod -R 777 $APP_DATA_PATH/volumes/node-red/certificates
-    if [ ! $? -eq 0 ]
-    then 
-      stop 
-      echo "$(date): Wasn't able to copy certificates." >> $APP_LOG
       exit 201
     fi
 
