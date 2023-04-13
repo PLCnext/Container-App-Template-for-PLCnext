@@ -65,7 +65,8 @@ build:arm32v7:
       --tarPath ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
     - gzip ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
   allow_failure: false
-  when: always
+  when: manual
+  
   tags:
     - shared-runner-kubernetes
     - multi-arc
@@ -118,9 +119,9 @@ container:arm32v7:
     # Set Bash executable
     - chmod +x scripts/replace_or_add_string.sh
     #Set ENV
-    - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_ARM}' 'IMAGE_NAME'  "IMAGE_NAME='${IMAGE_NAME}'"
-    - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_ARM}' 'IMAGE_TAG'  "IMAGE_TAG='${IMAGE_TAG}'"
-    - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_ARM}' 'IMAGE_FILE_NAME'  "IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_NAME'  "IMAGE_NAME='${IMAGE_NAME}'"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_TAG'  "IMAGE_TAG='${IMAGE_TAG}'"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_FILE_NAME'  "IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'"
 
     # Copy dependecies
     - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/arm/images/${IMAGE_NAME}.tar.gz
