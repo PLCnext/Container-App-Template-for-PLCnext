@@ -127,9 +127,13 @@ container:arm32v7:
     - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/arm/images/${IMAGE_NAME}.tar.gz
 
     # set information for app_info file
-    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"version":'  '"version":"'"${APP_VERSION}"'
-    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"version":'  '"version":"'"${APP_VERSION}"'
-    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"version":'  '"version":"'"${APP_VERSION}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"name":'  '"name":\ "${APP_NAME}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"identifier":'  '"identifier":\ "${IDENTIFIER_X86}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"version":'  '"version":\ "${APP_VERSION}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"target":'  '"target":\ "${TARGET_X86}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"minfirmware_version":'  '"minfirmware_version":\ "${MINFIRMWARE_VERSION}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"manufacturer":'  '"manufacturer":\ "${MANUFACTOR}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"licensetype":'  '"licensetype":\ "${LICENSE_TYPE}"'
 
     #Copy data and settings if you have something to copy
     #- cp -r ./data/* dir
@@ -178,19 +182,19 @@ container:x86:
     - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/x86/images/${IMAGE_NAME}.tar.gz
 
     # set information for app_info file
-    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"name":'  '"name":\ "'"${APP_NAME}"'
-    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"identifier":'  '"identifier":\ "'"${IDENTIFIER_X86}"'
-    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"version":'  '"version":\ "'"${APP_VERSION}"'
-    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"target":'  '"target":\ "'"${TARGET_X86}"'
-    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"minfirmware_version":'  '"minfirmware_version":\ "'"${MINFIRMWARE_VERSION}"'
-    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"manufacturer":'  '"manufacturer":\ "'"${MANUFACTOR}"'
-    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"licensetype":'  '"licensetype":\ "'"${LICENSE_TYPE}"'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"name":'  '"name":\ "${APP_NAME}"'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"identifier":'  '"identifier":\ "${IDENTIFIER_X86}"'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"version":'  '"version":\ "${APP_VERSION}"'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"target":'  '"target":\ "${TARGET_X86}"'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"minfirmware_version":'  '"minfirmware_version":\ "${MINFIRMWARE_VERSION}"'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"manufacturer":'  '"manufacturer":\ "${MANUFACTOR}"'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"licensetype":'  '"licensetype":\ "${LICENSE_TYPE}"'
 
 
     #Replace Windows style to Unix style for bash scripts
     - sed -i -e 's/\r$//' build_new_image/x86/initscript.sh
     - chmod +x build_new_image/x86/initscript.sh
-    - mksquashfs build_new_image/x86 ${IMAGE_NAME}-${CI_COMMIT_SHORT_SHA}_ARMv7.app -force-uid 1001 -force-gid 1002
+    - mksquashfs build_new_image/x86 ${IMAGE_NAME}-${CI_COMMIT_SHORT_SHA}_x86.app -force-uid 1001 -force-gid 1002
   allow_failure: false
   when: always
   tags:
