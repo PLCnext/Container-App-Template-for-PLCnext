@@ -115,6 +115,8 @@ container:arm32v7:
     - apt-get update
     - apt-get install -y squashfs-tools rpm curl jq
   script:
+    # Set Bash executable
+    - chmod +x scripts/replace_or_add_string.sh
     #Set ENV
     - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_ARM}' 'IMAGE_NAME'  "IMAGE_NAME='${IMAGE_NAME}'"
     - scripts/replace_or_add_string.sh 'build_new_image/${ENV_FILE_ARM}' 'IMAGE_TAG'  "IMAGE_TAG='${IMAGE_TAG}'"
