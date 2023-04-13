@@ -1,24 +1,24 @@
 {
     "plcnextapp": {
-        "name": "",
-        "identifier": "",
-        "version": "",
-        "target": "",
-        "minfirmware_version": "",
-        "manufacturer": "",
-	    "licensetype": ""
+        "name":"",
+        "identifier":"",
+        "version":"",
+        "target":"",
+        "minfirmware_version":"",
+        "manufacturer":"",
+	    "licensetype":""
     },
     "datastorage": {
-        "persistentdata": true,
-        "temporarydata": true
+        "persistentdata":true,
+        "temporarydata":true
     },
      "linuxdaemons" :
      [
            {
-               "path": "/bin/placeholder",
-               "cmdargs" : "",
-               "starttime": "99",
-               "initScriptTemplate": "initscript.sh"
+               "path":"/bin/placeholder",
+               "cmdargs":"",
+               "starttime":"99",
+               "initScriptTemplate":"initscript.sh"
            }
      ]
 }
