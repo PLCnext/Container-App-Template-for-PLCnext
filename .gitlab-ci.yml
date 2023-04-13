@@ -173,7 +173,7 @@ container:x86:
     # Copy dependecies
     - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/x86/images/${IMAGE_NAME}.tar.gz
 
-    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"version":'  '"version":"'"${APP_VERSION}"'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"version":'  '"version":"'"${APP_VERSION}"'"'
     #Copy data and settings if you have something to copy
     #- cp -r ./data/* dir
 
