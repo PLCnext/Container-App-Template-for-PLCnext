@@ -112,21 +112,25 @@ container:arm32v7:
     name: ubuntu:22.04
   needs: ["build:arm32v7"]
   before_script:
-    #Update repos and install dependecies
+    # update repos and install dependecies
     - apt-get update
     - apt-get install -y squashfs-tools rpm curl jq
   script:
-    # Set Bash executable
+    # set Bash executable
     - chmod +x scripts/replace_or_add_string.sh
-    #Set ENV
+    # set ENV
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_NAME'  "IMAGE_NAME='${IMAGE_NAME}'"
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_TAG'  "IMAGE_TAG='${IMAGE_TAG}'"
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_FILE_NAME'  "IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'"
 
-    # Copy dependecies
+    # copy dependecies
     - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/arm/images/${IMAGE_NAME}.tar.gz
 
+    # set information for app_info file
     - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"version":'  '"version":"'"${APP_VERSION}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"version":'  '"version":"'"${APP_VERSION}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"version":'  '"version":"'"${APP_VERSION}"'
+
     #Copy data and settings if you have something to copy
     #- cp -r ./data/* dir
 
@@ -173,9 +177,15 @@ container:x86:
     # Copy dependecies
     - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/x86/images/${IMAGE_NAME}.tar.gz
 
-    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"version":"'"'"'  '"version":"'"${APP_VERSION}"'"'
-    #Copy data and settings if you have something to copy
-    #- cp -r ./data/* dir
+    # set information for app_info file
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"name":'  '"name":\ "'"${APP_NAME}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"identifier":'  '"identifier":\ "'"${IDENTIFIER_X86}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"version":'  '"version":\ "'"${APP_VERSION}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"target":'  '"target":\ "'"${TARGET_X86}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"minfirmware_version":'  '"minfirmware_version":\ "'"${MINFIRMWARE_VERSION}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"manufacturer":'  '"manufacturer":\ "'"${MANUFACTOR}"'
+    - scripts/replace_or_add_string.sh build_new_image/arm/app_info.json '"licensetype":'  '"licensetype":\ "'"${LICENSE_TYPE}"'
+
 
     #Replace Windows style to Unix style for bash scripts
     - sed -i -e 's/\r$//' build_new_image/x86/initscript.sh

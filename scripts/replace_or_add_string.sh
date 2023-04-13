@@ -10,7 +10,7 @@ replace_or_add_string() {
     # Check if the string to replace already exists in the file
     if grep -q "$string_to_replace" "$file"; then
         # If it exists, replace it with the replacement string
-        sed -i "s/$string_to_replace/$replacement_string/g" "$file"
+        sed -i "s/$string_to_replace.*/$replacement_string/g" "$file"
     else
         # If it doesn't exist, append the replacement string to the file
         echo "$replacement_string" >> "$file"
