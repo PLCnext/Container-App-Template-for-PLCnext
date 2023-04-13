@@ -1,0 +1,6 @@
+*.app
+
+/test_build
+.vscode
+
+.DS_Store
