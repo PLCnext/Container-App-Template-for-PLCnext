@@ -24,7 +24,7 @@ variables:
   CONTAINER_TAG: "1.0"
   CONTAINER_NAME: "template-plcnext"
 
-  IMAGE_FILE_NAME: "nodered"
+  IMAGE_FILE_NAME: "nginx"
 
   # arm env
   ENV_FILE_ARM: "arm\/.env"
@@ -100,7 +100,7 @@ build:x86:
   artifacts:
     name: "container_x86"
     paths:
-    - ./IMAGE_NAME-${CI_COMMIT_SHA}.tar.gz
+    - ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz
     expire_in: 10 minutes
 
 container:arm32v7:
