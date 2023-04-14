@@ -7,7 +7,7 @@ variables:
   MINFIRMWARE_VERSION: "22.0"
   APP_NAME: "Template for PLCNext Apps"
   LICENSE_TYPE: "Free"
-  MANUFACTOR: "Phoenix Contact GmbH \& Co. KG"
+  MANUFACTOR: "Phoenix Contact GmbH and Co. KG"
 
   # ENV for LinuxDeamons
   LINUXDAEMON_PATH: "/bin/placeholder"
