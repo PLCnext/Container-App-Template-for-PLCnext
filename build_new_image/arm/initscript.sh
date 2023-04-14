@@ -15,7 +15,7 @@ trap 'echo "$(date): \"${last_command}\" command filed with exit code $?."' EXIT
 ### END INIT INFO
 
 
-NAME="NodeREDforPLCnextARMV7"
+
 USER=root
 CONTAINER_ENGINE=podman
 COMPOSE_ENGINE=podman-compose
