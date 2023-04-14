@@ -5,7 +5,7 @@ variables:
   # PLCNext App specification
   APP_VERSION: "0.1"
   MINFIRMWARE_VERSION: "22.0"
-  APP_NAME: "Template for PLCNext Apps"
+  APP_NAME: "Template\ for\ PLCNext\ Apps"
   LICENSE_TYPE: "Free"
   MANUFACTOR: "Phoenix Contact GmbH and Co. KG"
 
@@ -176,7 +176,7 @@ container:x86:
     # Set Bash executable
     - chmod +x scripts/replace_or_add_string.sh
     #Set ENV
-    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'NAME=' "NAME='${APP_NAME}' "
+    - sed -i -e '$a'"${APP_NAME}"'' build_new_image/${ENV_FILE_X86}
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_NAME' "IMAGE_NAME=${IMAGE_NAME}"
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_TAG' "IMAGE_TAG=${IMAGE_TAG}"
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_FILE_NAME' "IMAGE_FILE_NAME=${IMAGE_FILE_NAME}"
