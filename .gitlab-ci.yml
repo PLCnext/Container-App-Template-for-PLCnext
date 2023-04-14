@@ -176,10 +176,11 @@ container:x86:
     # Set Bash executable
     - chmod +x scripts/replace_or_add_string.sh
     #Set ENV
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'NAME=' "NAME=${APP_NAME}"
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_NAME' "IMAGE_NAME=${IMAGE_NAME}"
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_TAG' "IMAGE_TAG=${IMAGE_TAG}"
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_FILE_NAME' "IMAGE_FILE_NAME=${IMAGE_FILE_NAME}"
-    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'NAME' "NAME=${APP_NAME}"
+    
     
 
     # Copy dependecies
