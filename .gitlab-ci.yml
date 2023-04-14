@@ -182,7 +182,7 @@ container:x86:
     - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/x86/images/${IMAGE_NAME}.tar.gz
 
     # set information for app_info file
-    - sed -i 's/"name":.*/"name":"'${APP_NAME}'",/g' build_new_image/x86/app_info.json
+    - sed -i 's/"name":.*/"name":\ "'"${APP_NAME}"'",/g' build_new_image/x86/app_info.json
     - sed -i 's/"identifier":.*/"identifier":"'${IDENTIFIER_X86}'",/g' build_new_image/x86/app_info.json
     - sed -i 's/"version":.*/"version":"'${APP_VERSION}'",/g' build_new_image/x86/app_info.json
     - sed -i 's/"target":.*/"target":"'${TARGET_X86}'",/g' build_new_image/x86/app_info.json
