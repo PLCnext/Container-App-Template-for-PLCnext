@@ -5,7 +5,7 @@
         "version":"",
         "target":"",
         "minfirmware_version":"",
-        "manufacturer":"",
+        "manufacturer": "",
 	    "licensetype":""
     },
     "datastorage": {
