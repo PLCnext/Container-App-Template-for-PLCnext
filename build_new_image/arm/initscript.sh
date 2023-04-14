@@ -101,7 +101,6 @@ start ()
       echo "$(date): Wasn't able to start podman compose." >> $APP_LOG
       exit 201
     fi
-    
 
     # set app is installed
     touch $APP_DATA_PATH/dockerapp_install

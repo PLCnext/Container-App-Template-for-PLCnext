@@ -92,14 +92,6 @@ start ()
       exit 201
     fi
 
-    chmod -R 777 $APP_DATA_PATH/volumes/node-red/certificates
-    if [ ! $? -eq 0 ]
-    then 
-      stop 
-      echo "$(date): Wasn't able to copy certificates." >> $APP_LOG
-      exit 201
-    fi
-
     echo "Start compose" >> $APP_LOG
     cd $APP_DATA_PATH
     podman-compose up -d >> $APP_LOG 2>&1
@@ -110,7 +102,6 @@ start ()
       exit 201
     fi
     
-
     # set app is installed
     touch $APP_DATA_PATH/dockerapp_install
     echo "Installation finished" >> $APP_LOG
