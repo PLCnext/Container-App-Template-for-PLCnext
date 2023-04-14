@@ -14,8 +14,6 @@ trap 'echo "$(date): \"${last_command}\" command filed with exit code $?."' EXIT
 # Default-Stop:       0 1 6
 ### END INIT INFO
 
-
-NAME="NodeREDforPLCnextX86"
 USER=root
 CONTAINER_ENGINE=podman
 COMPOSE_ENGINE=podman-compose

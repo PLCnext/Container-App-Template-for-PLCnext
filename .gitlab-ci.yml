@@ -119,10 +119,10 @@ container:arm32v7:
     # set Bash executable
     - chmod +x scripts/replace_or_add_string.sh
     # set ENV
-    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_NAME'  "IMAGE_NAME='${IMAGE_NAME}'"
-    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_TAG'  "IMAGE_TAG='${IMAGE_TAG}'"
-    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_FILE_NAME'  "IMAGE_FILE_NAME='${IMAGE_FILE_NAME}'"
-    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'NAME' "NAME=${APP_NAME}"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_NAME'  "IMAGE_NAME=${IMAGE_NAME}"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_TAG'  "IMAGE_TAG=${IMAGE_TAG}"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_FILE_NAME'  "IMAGE_FILE_NAME=${IMAGE_FILE_NAME}"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'NAME' "NAME='${APP_NAME}'"
 
     # copy dependecies
     - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/arm/images/${IMAGE_NAME}.tar.gz
