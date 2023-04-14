@@ -182,13 +182,13 @@ container:x86:
     - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/x86/images/${IMAGE_NAME}.tar.gz
 
     # set information for app_info file
-    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"name":'  '"name":\ '"'${APP_NAME}'",'
-    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"identifier":'  '"identifier":\ '"'${IDENTIFIER_X86}'",'
-    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"version":'  '"version":\ '"'${APP_VERSION}'",'
-    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"target":'  '"target":\ '"'${TARGET_X86}'",'
-    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"minfirmware_version":'  '"minfirmware_version":\ '"'${MINFIRMWARE_VERSION}'",'
-    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"manufacturer":'  '"manufacturer":\ '"'${MANUFACTOR}'",'
-    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"licensetype":'  '"licensetype":\ '"'${LICENSE_TYPE}'"'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"name":'  '"name": '"'${APP_NAME}'",'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"identifier":'  '"identifier": '"'${IDENTIFIER_X86}'",'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"version":'  '"version": '"'${APP_VERSION}'",'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"target":'  '"target": '"'${TARGET_X86}'",'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"minfirmware_version":'  '"minfirmware_version": '"'${MINFIRMWARE_VERSION}'",'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"manufacturer":'  '"manufacturer": '"'${MANUFACTOR}'",'
+    - scripts/replace_or_add_string.sh build_new_image/x86/app_info.json '"licensetype":'  '"licensetype": '"'${LICENSE_TYPE}'"'
 
 
     #Replace Windows style to Unix style for bash scripts
