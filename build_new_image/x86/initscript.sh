@@ -78,15 +78,7 @@ start ()
     echo "$NAME is not installed --> load images and install" >> $APP_LOG
     echo "Copy content" >> $APP_LOG
     cp -r $APP_PATH "$APP_HOME/data"
-
-    # Create Volumes for Container
-    mkdir -p $APP_DATA_PATH/volumes/nginx >> $APP_LOG 2>&1
-    if [ ! $? -eq 0 ]
-    then
-      stop 
-      echo "$(date): Could not create folder for container with command: $0" >> $APP_LOG
-    fi
-    
+  
     chmod -R 777 $APP_DATA_PATH 
 
     echo "Load images" >> $APP_LOG

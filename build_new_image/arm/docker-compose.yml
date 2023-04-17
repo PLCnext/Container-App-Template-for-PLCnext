@@ -5,6 +5,4 @@ services:
     ports:
       - ${OUTGRESS_PORT}:${INGRESS_PORT}
     user: ${USER_ID}
-    volumes:
-      - ./volumes/nginx:/usr/share/nginx/html
     restart: unless-stopped
