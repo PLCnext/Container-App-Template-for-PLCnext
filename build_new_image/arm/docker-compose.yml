@@ -1,10 +1,10 @@
 version: "3.7"
 services:
-  node-red:
+  template-nginx-demo:
     image: ${IMAGE_NAME}:${IMAGE_TAG}
     ports:
       - ${OUTGRESS_PORT}:${INGRESS_PORT}
     user: ${USER_ID}
     volumes:
-      - ./volumes/node-red:/data
+      - ./volumes/nginx:/usr/share/nginx/html
     restart: unless-stopped
