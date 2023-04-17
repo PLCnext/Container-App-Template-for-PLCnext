@@ -102,9 +102,7 @@ start ()
     rm /media/rfs/rw/data/system/containers/docker-tar* >> $APP_LOG 2>&1
     if [ ! $? -eq 0 ]
     then
-      stop
       echo "$(date): Wasn't able to remove with command: '$0'." >> $APP_LOG
-      exit 201
     fi
 
     echo "Start compose" >> $APP_LOG
