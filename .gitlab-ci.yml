@@ -66,7 +66,7 @@ build_new_image:arm32v7:
       --tarPath ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
     - gzip ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
   allow_failure: false
-  when: always
+  when: manual
 
   tags:
     - shared-runner-kubernetes
@@ -98,7 +98,7 @@ build_new_image:x86:
       --tarPath ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
     - gzip ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
   allow_failure: false
-  when: always
+  when: manual
   tags:
     - shared-runner-kubernetes
     - multi-arc
@@ -200,7 +200,7 @@ container_new_image:x86:
     - chmod +x build_new_image/x86/initscript.sh
     - mksquashfs build_new_image/x86 ${IMAGE_NAME}-${CI_COMMIT_SHORT_SHA}_x86.app -force-uid 1001 -force-gid 1002
   allow_failure: false
-  when: always
+  when: manual
   tags:
     - shared-runner-kubernetes
     - multi-arc
