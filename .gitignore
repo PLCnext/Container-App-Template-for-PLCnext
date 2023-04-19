@@ -218,3 +218,5 @@ $RECYCLE.BIN/
 
 
 test
+
+sed -i -e 's/hello_world.*/hello_world='"${test}"'/g' -i -e 's//hello_world='"${test}"'/'  .env
