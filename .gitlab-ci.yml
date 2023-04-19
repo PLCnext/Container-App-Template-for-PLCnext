@@ -40,9 +40,10 @@ variables:
 
 # Build stages
 stages:
+  - container_existing_image
   - build_new_image
   - container_new_image
-  - container_existing_image
+  
 
 # Build process for image that need to be build up 
 
@@ -147,7 +148,7 @@ container_new_image:arm32v7:
     - chmod +x build_new_image/arm/initscript.sh
     - mksquashfs build_new_image/arm ${IMAGE_NAME}-${CI_COMMIT_SHORT_SHA}_ARMv7.app -force-uid 1001 -force-gid 1002
   allow_failure: false
-  when: always
+  when: manual
   tags:
     - shared-runner-kubernetes
     - multi-arc
@@ -263,10 +264,7 @@ container_existing_image:amd64:
   tags:
     - shared-runner-kubernetes
     - multi-arc
-  # cache:
-  #   key: kaniko-cache
-  #   paths:
-  #   - ./cache
+
   artifacts:
     name: "${CI_PROJECT_NAME}-${CI_COMMIT_SHORT_SHA}_x86"
     paths:
@@ -319,10 +317,7 @@ container_existing_image:arm32v7:
   tags:
     - shared-runner-kubernetes
     - multi-arc
-  # cache:
-  #   key: kaniko-cache
-  #   paths:
-  #   - ./cache
+
   artifacts:
     name: "${CI_PROJECT_NAME}-${CI_COMMIT_SHORT_SHA}_arm"
     paths:
