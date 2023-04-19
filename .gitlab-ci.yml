@@ -258,6 +258,9 @@ container_existing_image:amd64:
     - sed -i 's/"manufacturer":.*/"manufacturer":\ "'"${MANUFACTOR}"'",/g' build_existing_image/x86/app_info.json
     - sed -i 's/"licensetype":.*/"licensetype":\ "'"${LICENSE_TYPE}"'"/g' build_existing_image/x86/app_info.json
 
+    #Replace Windows style to Unix style for bash scripts
+    - sed -i -e 's/\r$//' build_existing_image/x86/initscript.sh
+
     - chmod +x build_existing_image/x86/initscript.sh
     - mksquashfs build_existing_image/x86 $IMAGE_NAME-${CI_COMMIT_SHORT_SHA}_x86.app -force-uid 1001 -force-gid 1002
 
@@ -288,7 +291,7 @@ container_existing_image:arm32v7:
     # set Bash executable
     - chmod +x scripts/replace_or_add_string.sh
     # set ENV
-    - sed -i -e 's/NAME=.*/NAME='"${APP_NAME}"'/g' -e '$ a NAME='"${APP_NAME}" build_new_image/${ENV_FILE_ARM}
+    - sed -i -e 's/NAME=.*/NAME='"${APP_NAME}"'/g' -e '$ a NAME='"${APP_NAME}" build_existing_image/${ENV_FILE_ARM}
     - scripts/replace_or_add_string.sh build_existing_image/${ENV_FILE_ARM} 'IMAGE_NAME' "IMAGE_NAME=${IMAGE_NAME}"
     - scripts/replace_or_add_string.sh build_existing_image/${ENV_FILE_ARM} 'IMAGE_TAG' "IMAGE_TAG=${IMAGE_TAG}"
     - scripts/replace_or_add_string.sh build_existing_image/${ENV_FILE_ARM} 'IMAGE_FILE_NAME' "IMAGE_FILE_NAME=${IMAGE_FILE_NAME}"
@@ -311,6 +314,9 @@ container_existing_image:arm32v7:
     - sed -i 's/"minfirmware_version":.*/"minfirmware_version":\ "'"${MINFIRMWARE_VERSION}"'",/g' build_existing_image/arm/app_info.json
     - sed -i 's/"manufacturer":.*/"manufacturer":\ "'"${MANUFACTOR}"'",/g' build_existing_image/arm/app_info.json
     - sed -i 's/"licensetype":.*/"licensetype":\ "'"${LICENSE_TYPE}"'"/g' build_existing_image/arm/app_info.json
+
+    #Replace Windows style to Unix style for bash scripts
+    - sed -i -e 's/\r$//' build_existing_image/arm/initscript.sh
 
     - chmod +x build_existing_image/arm/initscript.sh
     - mksquashfs build_existing_image/arm $IMAGE_NAME-${CI_COMMIT_SHORT_SHA}_arm.app -force-uid 1001 -force-gid 1002
