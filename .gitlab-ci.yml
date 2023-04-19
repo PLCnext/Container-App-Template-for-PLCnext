@@ -112,7 +112,7 @@ container_new_image:arm32v7:
   stage: container_new_image
   image:
     name: ubuntu:22.04
-  needs: ["build:arm32v7"]
+  needs: ["build_new_image:arm32v7"]
   before_script:
     # update repos and install dependecies
     - apt-get update
@@ -169,7 +169,7 @@ container_new_image:x86:
   stage: container_new_image
   image:
     name: ubuntu:22.04
-  needs: ["build:x86"]
+  needs: ["build_new_image:x86"]
   before_script:
     #Update repos and install dependecies
     - apt-get update
