@@ -127,7 +127,6 @@ container_new_image:arm32v7:
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_TAG' "IMAGE_TAG=${IMAGE_TAG}"
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_FILE_NAME' "IMAGE_FILE_NAME=${IMAGE_FILE_NAME}"
     
-    - cat build_new_image/${ENV_FILE_ARM}
     # copy dependecies
     - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/arm/images/${IMAGE_NAME}.tar.gz
 
@@ -184,7 +183,6 @@ container_new_image:x86:
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_TAG' "IMAGE_TAG=${IMAGE_TAG}"
     - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_FILE_NAME' "IMAGE_FILE_NAME=${IMAGE_FILE_NAME}"
     
-    - cat build_new_image/${ENV_FILE_X86}
     # Copy dependecies
     - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/x86/images/${IMAGE_NAME}.tar.gz
 
