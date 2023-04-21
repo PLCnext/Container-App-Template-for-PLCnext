@@ -6,12 +6,7 @@ The apps itself can contain's OCI images or binary or any other thing than can b
 This project aims to create app's. This app's are enabled and build to run on the PLCnext controllers. 
 This app's can contain a lot of stuff that's normaly runs on Linux systems. 
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-![pipeline](https://gitlab.phoenixcontact.com/vmm-factory-automation/digital-factory/data-collection-storage-evaluation/container-app-template-for-plcnext/badges/main/pipeline.svg)
-
-
+![pipeline](https://gitlab.phoenixcontact.com/vmm-factory-automation/digital-factory/data-collection-storage-evaluation/container-app-template-for-plcnext/badges/$branch/pipeline.svg)
 
 ## Visuals
 Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
