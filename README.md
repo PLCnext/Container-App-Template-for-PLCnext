@@ -6,11 +6,15 @@ The apps itself can contain's OCI images or binary or any other thing than can b
 ## Description
 This project aims to create app's. This app's can run on the PLCnext controllers (like the one's that are deployed on the [plcnextstore](https://www.plcnextstore.com)). 
 
-This app's can contain a lot of stuff that's normaly runs on Linux systems. 
+This app's can contain a lot of stuff that's normaly runs on Linux systems. But this template focueses only on running OCI container. An app on the plcnext ecosystem means an running application that can be installed on any plcnext controller. This 
+
+- TODO explain what is an app
 
 This projects splits into two seperate projects. One implements an build process for an existing image.
 The other one builds up an totaly new one, that contains an OCI image build. 
 These sample uses [nginx](https://nginx.org). For the existing image, the ready to use image, from [hub.docker.com](https://hub.docker.com/_/nginx) is used. And for the new build, the [official](https://github.com/nginxinc/docker-nginx) build from the nginx is used.
+
+
 
 The Project don't focus on binary files or self developed application that must run the bare metal. It's aims either create an OCI image or pull some and get that image running on the PLCnext hardware.
 ## Prerequisites
@@ -19,7 +23,7 @@ So if you want to deploy or create an PLCnext app, you have to decide two differ
 1. ### An existing amage
     If you have already created an image or you want use an existing that you have to adapt, you can choose the folder [build_existing_image](./build_existing_image/). There is everything explained within it. It's load an prebuild nginx image from dockerhub and passes the wrapper system to run on the controllers. 
 2. ### An build for a new image
-    If you have to create an completly new image. There is an sample folder [build_new_image](./build_new_image/) how to do this by an applicative demo with nginx.
+    If you have to create an completly new image. There is an sample folder [build_new_image](./build_new_image/) which contains anything that's needed to build an image with the wrapper for running an app. 
 
 
 ## File/Project structure
