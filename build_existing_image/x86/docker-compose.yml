@@ -1,0 +1,8 @@
+version: "3.7"
+services:
+  template-nginx-demo:
+    image: ${IMAGE_NAME}:${IMAGE_TAG}
+    ports:
+      - ${OUTGRESS_PORT}:${INGRESS_PORT}
+    user: ${USER_ID}
+    restart: unless-stopped
