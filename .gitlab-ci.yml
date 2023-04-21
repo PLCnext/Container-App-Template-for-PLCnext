@@ -1,0 +1,333 @@
+#Variables
+variables:
+  # Configuration for General App Description
+  # More information can be found on https://store.plcnext.help/st/PLCnext_App_Integration_Guide/Apps_parts/Example_of_a_complete_app_info.htm
+  # PLCNext App specification
+  APP_VERSION: "0.1"
+  MINFIRMWARE_VERSION: "22.0"
+  APP_NAME: "Template for PLCNext Apps"
+  LICENSE_TYPE: "Free"
+  MANUFACTOR: "Phoenix Contact GmbH and Co. KG"
+
+  # ENV for LinuxDeamons
+  LINUXDAEMON_PATH: "/bin/placeholder"
+
+  # ENV for ARM Architecture
+  IDENTIFIER_ARM: "60002172000510"
+  TARGET_ARM: "AXC F 2152"
+  
+  # ENV for x86 Architecture
+  IDENTIFIER_X86: "60002172000551"
+  TARGET_X86: "AXC F 3152,RFC 4072S,EPC 1502,EPC 1522,BPC 9102S"
+
+  # Container specification 
+  CONTAINER_TAG: "1.24"
+  CONTAINER_NAME: "template-plcnext"
+
+  IMAGE_FILE_NAME: "nginx"
+
+  # arm env
+  ENV_FILE_ARM: "arm\/.env"
+
+  # x86 env
+  ENV_FILE_X86: "x86\/.env"
+
+  # A Docker build ENV
+  IMAGE_NAME: "nginx"
+  IMAGE_DESTINATION: "plcnext/nginx"
+  IMAGE_TAG: ${CONTAINER_TAG}
+
+
+# Build stages
+stages:
+  - container_existing_image
+  - build_new_image
+  - container_new_image
+  
+
+# Build process for image that need to be build up 
+
+build_new_image:arm32v7:
+  stage: build_new_image
+  image: 
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    #Kaniko Executor to build image, its used here because of the easy and rootless integration
+    - /kaniko/executor 
+      --context $CI_PROJECT_DIR/build_new_image/build
+      --dockerfile $CI_PROJECT_DIR/build_new_image/build/Dockerfile
+      --destination ${IMAGE_NAME}:${IMAGE_TAG}
+      --build-arg ARCH=arm32v7
+      --build-arg BUILD_DATE="$(date +"%Y-%m-%dT%H:%M:%SZ")" 
+      --build-arg TAG_SUFFIX=default 
+      --build-arg OS=alpine 
+      --no-push
+      --customPlatform=linux/arm/v7
+      --tarPath ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
+    - gzip ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
+  allow_failure: false
+  when: always
+
+  tags:
+    - shared-runner-kubernetes
+    - multi-arc
+  artifacts:
+    name: "container_arm"
+    paths:
+    - ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz
+    expire_in: 10 minutes
+
+
+build_new_image:x86:
+  stage: build_new_image
+  image: 
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    #Replace NodeRed version from ENV
+    - /kaniko/executor 
+      --context $CI_PROJECT_DIR/build_new_image/build
+      --dockerfile $CI_PROJECT_DIR/build_new_image/build/Dockerfile
+      --destination ${IMAGE_NAME}:${IMAGE_TAG}
+      --build-arg ARCH=amd64
+      --build-arg BUILD_DATE="$(date +"%Y-%m-%dT%H:%M:%SZ")" 
+      --build-arg TAG_SUFFIX=default 
+      --build-arg OS=alpine 
+      --no-push
+      --customPlatform=linux/amd64
+      --tarPath ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
+    - gzip ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
+  allow_failure: false
+  when: manual
+  tags:
+    - shared-runner-kubernetes
+    - multi-arc
+  artifacts:
+    name: "container_x86"
+    paths:
+    - ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz
+    expire_in: 10 minutes
+
+container_new_image:arm32v7:
+  stage: container_new_image
+  image:
+    name: ubuntu:22.04
+  needs: ["build_new_image:arm32v7"]
+  before_script:
+    # update repos and install dependecies
+    - apt-get update
+    - apt-get install -y squashfs-tools rpm curl jq
+  script:
+    # set Bash executable
+    - chmod +x scripts/replace_or_add_string.sh
+    # set ENV
+    - sed -i -e 's/NAME=.*/NAME='"${APP_NAME}"'/g' -e '$ a NAME='"${APP_NAME}" build_new_image/${ENV_FILE_ARM}
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_NAME' "IMAGE_NAME=${IMAGE_NAME}"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_TAG' "IMAGE_TAG=${IMAGE_TAG}"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_ARM} 'IMAGE_FILE_NAME' "IMAGE_FILE_NAME=${IMAGE_FILE_NAME}"
+    
+    # copy dependecies
+    - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/arm/images/${IMAGE_NAME}.tar.gz
+
+    # set information for app_info file
+    - sed -i 's/"name":.*/"name":\ "'"${APP_NAME}"'",/g' build_new_image/arm/app_info.json
+    - sed -i 's/"identifier":.*/"identifier":\ "'"${IDENTIFIER_ARM}"'",/g' build_new_image/arm/app_info.json
+    - sed -i 's/"version":.*/"version":\ "'"${APP_VERSION}"'",/g' build_new_image/arm/app_info.json
+    - sed -i 's/"target":.*/"target":\ "'"${TARGET_ARM}"'",/g' build_new_image/arm/app_info.json
+    - sed -i 's/"minfirmware_version":.*/"minfirmware_version":\ "'"${MINFIRMWARE_VERSION}"'",/g' build_new_image/arm/app_info.json
+    - sed -i 's/"manufacturer":.*/"manufacturer":\ "'"${MANUFACTOR}"'",/g' build_new_image/arm/app_info.json
+    - sed -i 's/"licensetype":.*/"licensetype":\ "'"${LICENSE_TYPE}"'"/g' build_new_image/arm/app_info.json
+
+    #Copy data and settings if you have something to copy
+    #- cp -r ./data/* dir
+
+    #Replace Windows style to Unix style for bash scripts
+    - sed -i -e 's/\r$//' build_new_image/arm/initscript.sh
+    - chmod +x build_new_image/arm/initscript.sh
+    - mksquashfs build_new_image/arm ${IMAGE_NAME}-${CI_COMMIT_SHORT_SHA}_ARMv7.app -force-uid 1001 -force-gid 1002
+  allow_failure: false
+  when: always
+  tags:
+    - shared-runner-kubernetes
+    - multi-arc
+  # cache:
+  #   key: kaniko-cache
+  #   paths:
+  #   - ./cache
+  dependencies:
+  -  build_new_image:arm32v7
+
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_COMMIT_SHORT_SHA}_armv7"
+    paths:
+      - ./*.app
+    when: on_success
+    expire_in: 1 Hour
+
+container_new_image:x86:
+  stage: container_new_image
+  image:
+    name: ubuntu:22.04
+  needs: ["build_new_image:x86"]
+  before_script:
+    #Update repos and install dependecies
+    - apt-get update
+    - apt-get install -y squashfs-tools rpm curl jq
+  script:
+    # Set Bash executable
+    - chmod +x scripts/replace_or_add_string.sh
+    #Set ENV
+    - sed -i -e 's/NAME=.*/NAME='"${APP_NAME}"'/g' -e '$ a NAME='"${APP_NAME}" build_new_image/${ENV_FILE_X86}
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_NAME' "IMAGE_NAME=${IMAGE_NAME}"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_TAG' "IMAGE_TAG=${IMAGE_TAG}"
+    - scripts/replace_or_add_string.sh build_new_image/${ENV_FILE_X86} 'IMAGE_FILE_NAME' "IMAGE_FILE_NAME=${IMAGE_FILE_NAME}"
+    
+    # Copy dependecies
+    - cp ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar.gz build_new_image/x86/images/${IMAGE_NAME}.tar.gz
+
+    # set information for app_info file
+    - sed -i 's/"name":.*$/"name":\ "'"${APP_NAME}"'",/g' build_new_image/x86/app_info.json
+    - sed -i 's/"identifier":.*$/"identifier":\ "'"${IDENTIFIER_X86}"'",/g' build_new_image/x86/app_info.json
+    - sed -i 's/"version":.*$/"version":\ "'"${APP_VERSION}"'",/g' build_new_image/x86/app_info.json
+    - sed -i 's/"target":.*$/"target":\ "'"${TARGET_X86}"'",/g' build_new_image/x86/app_info.json
+    - sed -i 's/"minfirmware_version":.*$/"minfirmware_version":\ "'"${MINFIRMWARE_VERSION}"'",/g' build_new_image/x86/app_info.json
+    - sed -i 's/"manufacturer":.*$/"manufacturer":\ "'"${MANUFACTOR}"'",/g' build_new_image/x86/app_info.json
+    - sed -i 's/"licensetype":.*$/"licensetype":\ "'"${LICENSE_TYPE}"'"/g' build_new_image/x86/app_info.json
+
+    #Replace Windows style to Unix style for bash scripts
+    - sed -i -e 's/\r$//' build_new_image/x86/initscript.sh
+    - chmod +x build_new_image/x86/initscript.sh
+    - mksquashfs build_new_image/x86 ${IMAGE_NAME}-${CI_COMMIT_SHORT_SHA}_x86.app -force-uid 1001 -force-gid 1002
+  allow_failure: false
+  when: manual
+  tags:
+    - shared-runner-kubernetes
+    - multi-arc
+  # cache:
+  #   key: kaniko-cache
+  #   paths:
+  #   - ./cache
+  dependencies:
+    - build_new_image:x86
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_COMMIT_SHORT_SHA}_x86"
+    paths:
+      - ./*.app
+    when: on_success
+    expire_in: 1 Hour
+
+
+# Build process for existing images
+
+container_existing_image:amd64:
+  stage: container_existing_image
+  image:
+    name: ubuntu:latest
+  before_script:
+    #Update repos and install dependecies
+    - apt-get update  && apt-get upgrade -y
+    - apt-get install -y squashfs-tools rpm curl jq
+  script:
+    # set Bash executable
+    - chmod +x scripts/replace_or_add_string.sh
+    # set ENV
+    - sed -i -e 's/NAME=.*/NAME='"${APP_NAME}"'/g' -e '$ a NAME='"${APP_NAME}" build_new_image/${ENV_FILE_X86}
+    - scripts/replace_or_add_string.sh build_existing_image/${ENV_FILE_X86} 'IMAGE_NAME' "IMAGE_NAME=${IMAGE_NAME}"
+    - scripts/replace_or_add_string.sh build_existing_image/${ENV_FILE_X86} 'IMAGE_TAG' "IMAGE_TAG=${IMAGE_TAG}"
+    - scripts/replace_or_add_string.sh build_existing_image/${ENV_FILE_X86} 'IMAGE_FILE_NAME' "IMAGE_FILE_NAME=${IMAGE_FILE_NAME}"
+
+    - cat build_new_image/${ENV_FILE_ARM}
+    # download Docker images to store for local installation and 
+    - chmod +x ./scripts/download-frozen-image-v2.sh
+    
+    # load Influxdb  
+    - mkdir -p ./build_existing_image/x86/images/tmp/$IMAGE_NAME
+    - ./scripts/download-frozen-image-v2.sh build_existing_image/x86/images/tmp/$IMAGE_NAME amd64/$IMAGE_NAME:$IMAGE_TAG
+    - tar -czvC build_existing_image/x86/images/tmp/$IMAGE_NAME . -f build_existing_image/x86/images/$IMAGE_NAME.tar.gz
+    - rm -r build_existing_image/x86/images/tmp
+
+    # set information for app_info file
+    - sed -i 's/"name":.*/"name":\ "'"${APP_NAME}"'",/g' build_existing_image/x86/app_info.json
+    - sed -i 's/"identifier":.*/"identifier":\ "'"${IDENTIFIER_X86}"'",/g' build_existing_image/x86/app_info.json
+    - sed -i 's/"version":.*/"version":\ "'"${APP_VERSION}"'",/g' build_existing_image/x86/app_info.json
+    - sed -i 's/"target":.*/"target":\ "'"${TARGET_X86}"'",/g' build_existing_image/x86/app_info.json
+    - sed -i 's/"minfirmware_version":.*/"minfirmware_version":\ "'"${MINFIRMWARE_VERSION}"'",/g' build_existing_image/x86/app_info.json
+    - sed -i 's/"manufacturer":.*/"manufacturer":\ "'"${MANUFACTOR}"'",/g' build_existing_image/x86/app_info.json
+    - sed -i 's/"licensetype":.*/"licensetype":\ "'"${LICENSE_TYPE}"'"/g' build_existing_image/x86/app_info.json
+
+    #Replace Windows style to Unix style for bash scripts
+    - sed -i -e 's/\r$//' build_existing_image/x86/initscript.sh
+
+    - chmod +x build_existing_image/x86/initscript.sh
+    - mksquashfs build_existing_image/x86 $IMAGE_NAME-${CI_COMMIT_SHORT_SHA}_x86.app -force-uid 1001 -force-gid 1002
+
+  allow_failure: false
+  when: always
+  tags:
+    - shared-runner-kubernetes
+    - multi-arc
+
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_COMMIT_SHORT_SHA}_x86"
+    paths:
+      - ./*.app
+    when: on_success
+    expire_in: 1 week
+
+
+
+container_existing_image:arm32v7:
+  stage: container_existing_image
+  image:
+    name: ubuntu:latest
+  before_script:
+    #Update repos and install dependecies
+    - apt-get update  && apt-get upgrade -y
+    - apt-get install -y squashfs-tools rpm curl jq
+  script:
+    # set Bash executable
+    - chmod +x scripts/replace_or_add_string.sh
+    # set ENV
+    - sed -i -e 's/NAME=.*/NAME='"${APP_NAME}"'/g' -e '$ a NAME='"${APP_NAME}" build_existing_image/${ENV_FILE_ARM}
+    - scripts/replace_or_add_string.sh build_existing_image/${ENV_FILE_ARM} 'IMAGE_NAME' "IMAGE_NAME=${IMAGE_NAME}"
+    - scripts/replace_or_add_string.sh build_existing_image/${ENV_FILE_ARM} 'IMAGE_TAG' "IMAGE_TAG=${IMAGE_TAG}"
+    - scripts/replace_or_add_string.sh build_existing_image/${ENV_FILE_ARM} 'IMAGE_FILE_NAME' "IMAGE_FILE_NAME=${IMAGE_FILE_NAME}"
+
+    - cat build_new_image/${ENV_FILE_ARM}
+    # download Docker images to store for local installation and 
+    - chmod +x ./scripts/download-frozen-image-v2.sh
+    
+    # load Influxdb  
+    - mkdir -p ./build_existing_image/arm/images/tmp/$IMAGE_NAME
+    - ./scripts/download-frozen-image-v2.sh build_existing_image/arm/images/tmp/$IMAGE_NAME arm32v7/$IMAGE_NAME:$IMAGE_TAG
+    - tar -czvC build_existing_image/arm/images/tmp/$IMAGE_NAME . -f build_existing_image/arm/images/$IMAGE_NAME.tar.gz
+    - rm -r build_existing_image/arm/images/tmp
+
+    # set information for app_info file
+    - sed -i 's/"name":.*/"name":\ "'"${APP_NAME}"'",/g' build_existing_image/arm/app_info.json
+    - sed -i 's/"identifier":.*/"identifier":\ "'"${IDENTIFIER_ARM}"'",/g' build_existing_image/arm/app_info.json
+    - sed -i 's/"version":.*/"version":\ "'"${APP_VERSION}"'",/g' build_existing_image/arm/app_info.json
+    - sed -i 's/"target":.*/"target":\ "'"${TARGET_ARM}"'",/g' build_existing_image/arm/app_info.json
+    - sed -i 's/"minfirmware_version":.*/"minfirmware_version":\ "'"${MINFIRMWARE_VERSION}"'",/g' build_existing_image/arm/app_info.json
+    - sed -i 's/"manufacturer":.*/"manufacturer":\ "'"${MANUFACTOR}"'",/g' build_existing_image/arm/app_info.json
+    - sed -i 's/"licensetype":.*/"licensetype":\ "'"${LICENSE_TYPE}"'"/g' build_existing_image/arm/app_info.json
+
+    #Replace Windows style to Unix style for bash scripts
+    - sed -i -e 's/\r$//' build_existing_image/arm/initscript.sh
+
+    - chmod +x build_existing_image/arm/initscript.sh
+    - mksquashfs build_existing_image/arm $IMAGE_NAME-${CI_COMMIT_SHORT_SHA}_arm.app -force-uid 1001 -force-gid 1002
+
+  allow_failure: false
+  when: always
+  tags:
+    - shared-runner-kubernetes
+    - multi-arc
+
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_COMMIT_SHORT_SHA}_arm"
+    paths:
+      - ./*.app
+    when: on_success
+    expire_in: 1 week
