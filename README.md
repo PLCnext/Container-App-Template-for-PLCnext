@@ -2,14 +2,34 @@
 This template is used to create app's for the PLCnext store. 
 The apps itself can contain's OCI images or binary or any other thing than can be executed.
 
+![pipeline](https://gitlab.phoenixcontact.com/vmm-factory-automation/digital-factory/data-collection-storage-evaluation/container-app-template-for-plcnext/badges/$branch/pipeline.svg)
 ## Description
-This project aims to create app's. This app's are enabled and build to run on the PLCnext controllers. 
+This project aims to create app's. This app's can run on the PLCnext controllers (like the one's that are deployed on the [plcnextstore](https://www.plcnextstore.com)). 
+
 This app's can contain a lot of stuff that's normaly runs on Linux systems. 
 
-![pipeline](https://gitlab.phoenixcontact.com/vmm-factory-automation/digital-factory/data-collection-storage-evaluation/container-app-template-for-plcnext/badges/$branch/pipeline.svg)
+This projects splits into two seperate projects. One implements an build process for an existing image.
+The other one builds up an totaly new one, that contains an OCI image build. 
+These sample uses [nginx](https://nginx.org). For the existing image, the ready to use image, from [hub.docker.com](https://hub.docker.com/_/nginx) is used. And for the new build, the [official](https://github.com/nginxinc/docker-nginx) build from the nginx is used.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+### A typical top-level directory layout
+
+    .
+    ├── LICENSE
+    ├── README.md
+    ├── build_existing_image
+    │   ├── README.md
+    │   ├── arm
+    │   └── x86
+    ├── build_new_image
+    │   ├── README.md
+    │   ├── arm
+    │   ├── build
+    │   ├── build.sh
+    │   └── x86
+    └── scripts
+        ├── download-frozen-image-v2.sh
+        └── replace_or_add_string.sh
 
 ## Installation
 Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
