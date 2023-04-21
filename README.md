@@ -12,23 +12,22 @@ This projects splits into two seperate projects. One implements an build process
 The other one builds up an totaly new one, that contains an OCI image build. 
 These sample uses [nginx](https://nginx.org). For the existing image, the ready to use image, from [hub.docker.com](https://hub.docker.com/_/nginx) is used. And for the new build, the [official](https://github.com/nginxinc/docker-nginx) build from the nginx is used.
 
-### A typical top-level directory layout
+## File/Project structure
 
     .
     ├── LICENSE
     ├── README.md
-    ├── build_existing_image
-    │   ├── README.md
-    │   ├── arm
-    │   └── x86
+    ├── build_existing_image                 
+    │   ├── README.md   
+    │   ├── arm                 # base structure app arm
+    │   └── x86                 # base structure app x86
     ├── build_new_image
     │   ├── README.md
-    │   ├── arm
-    │   ├── build
-    │   ├── build.sh
-    │   └── x86
+    │   ├── build               # dependecys for build process
+    │   ├── arm                 # base structure app arm
+    │   └── x86                 # base structure app x86
     └── scripts
-        ├── download-frozen-image-v2.sh
+        ├── download-frozen-image-v2.sh 
         └── replace_or_add_string.sh
 
 ## Installation
