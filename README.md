@@ -12,6 +12,12 @@ This projects splits into two seperate projects. One implements an build process
 The other one builds up an totaly new one, that contains an OCI image build. 
 These sample uses [nginx](https://nginx.org). For the existing image, the ready to use image, from [hub.docker.com](https://hub.docker.com/_/nginx) is used. And for the new build, the [official](https://github.com/nginxinc/docker-nginx) build from the nginx is used.
 
+The Project don't focus on binary files or self developed application that must run the bare metal. It's aims either create an OCI image or pull some and get that image running on the PLCnext hardware.
+## Prerequisites
+So if you want to deploy or create an PLCnext app, you have to decide two different cases. 
+1. ### An existing amage
+    You can choose the folder [build_existing_image](./build_existing_image/) 
+2. ### An build for a new image
 ## File/Project structure
 
     .
