@@ -20,6 +20,7 @@ So if you want to deploy or create an PLCnext app, you have to decide two differ
 2. ### An build for a new image
     If you have to create an completly new image. There is an sample folder [build_new_image](./build_new_image/) which contains anything that's needed to build an image with the wrapper for running an app.
 
+Inside this folder are explanation of what the are doing.
 ## File/Project structure
     .
     ├── gitlab-ci.yml
