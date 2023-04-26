@@ -55,6 +55,7 @@ If you need help or find some errors, feel free to contact digitalfactorynow@pho
 If you have any suggestions to improve our projects, please feel free to contact us or commit new features to this project.
 
 ## License
+Copyright (c) Phoenix Contact GmbH & Co KG. All rights reserved.
 MIT License, please see [LICENSE](./LICENSE) for details.
 
 ## Project status
