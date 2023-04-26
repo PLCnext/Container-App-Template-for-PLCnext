@@ -46,3 +46,7 @@ So there is an script  ([initscript_arm](./arm/initscript.sh), [initscript_x86](
 If you want extend your applications with additional information, normally all things that has to be in some form executed must be done there(like overwrite existing file/folder permissions etc. ).
 
 If you want to extend base images you could mount files. These can be done by adding an new folder (e.g ./arm/volumes and ./x86/volumes) and add these as an mounting volume to the [docker-compose.yml](./arm/docker-compose.yml) file.
+
+## Pipeline structure
+
+The pipeline splits into one stage. The stage is called *container_existing_image* it will download the predefined image, that has been set in [configuration part](#edit-environmental-variables-to-pipeline-configuration)
