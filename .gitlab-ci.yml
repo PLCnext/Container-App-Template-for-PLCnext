@@ -20,16 +20,13 @@ variables:
   IDENTIFIER_X86: "60002172000551"
   TARGET_X86: "AXC F 3152,RFC 4072S,EPC 1502,EPC 1522,BPC 9102S"
 
-  # Container specification 
-  CONTAINER_NAME: "template-plcnext"
-  CONTAINER_TAG: "1.24"
   # Compressed tarball that the image will be saved to
   IMAGE_FILE_NAME: "nginx"
 
   # A Docker build ENV
   IMAGE_NAME: "nginx"
   IMAGE_DESTINATION: "plcnext/nginx"
-  IMAGE_TAG: ${CONTAINER_TAG}
+  IMAGE_TAG: "1.24"
 
 
   # Build specific Variables

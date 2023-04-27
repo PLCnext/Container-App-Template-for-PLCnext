@@ -32,8 +32,8 @@ An PLCnext app needs the app_info.json as information for the plcnext runtime. I
    1. `IDENTIFIER_ARM` and `IDENTIFIER_X86` are the unique identifier provided by the *[plcnextstore](https://plcnextstore.com)*. These must be different due to the different platforms.
    2. `TARGET_ARM` and `TARGET_X86`
 8. Container specific variables:
-   1. `CONTAINER_NAME` it's the container name that will be downloaded or build.
-   2. `CONTAINER_TAG` is the tag that we need to download the right OCI image.
+   1. `IMAGE_NAME` it's the image name that will be downloaded.
+   2. `IMAGE_TAG` is the tag that we need to download the right OCI image.
 
 So all of these variables need to be changed to your needs and project.
 
@@ -49,4 +49,5 @@ If you want to extend base images you could mount files. These can be done by ad
 
 ## Pipeline structure
 
-The pipeline splits into one stage. The stage is called *container_existing_image* it will download the predefined image, that has been set in [configuration part](#edit-environmental-variables-to-pipeline-configuration)
+the pipeline consists of only one stage. The stage is called *container_existing_image* it will download the predefined image, that has been set in [configuration part](#edit-environmental-variables-to-pipeline-configuration) and add neccessary dependecies and afterwards compress it into an *.app* file.
+Also all nessescary information will be added to the app structure files.
