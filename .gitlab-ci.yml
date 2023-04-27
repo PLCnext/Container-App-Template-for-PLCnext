@@ -100,7 +100,7 @@ build_new_image:x86:
       --tarPath ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
     - gzip ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
   allow_failure: false
-  when: manual
+  when: always
   tags:
     - shared-runner-kubernetes
     - multi-arc
