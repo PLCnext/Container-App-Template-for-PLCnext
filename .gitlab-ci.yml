@@ -20,22 +20,23 @@ variables:
   IDENTIFIER_X86: "60002172000551"
   TARGET_X86: "AXC F 3152,RFC 4072S,EPC 1502,EPC 1522,BPC 9102S"
 
-  # Container specification 
-  CONTAINER_TAG: "1.24"
-  CONTAINER_NAME: "template-plcnext"
-
+  # Compressed tarball that the image will be saved to
   IMAGE_FILE_NAME: "nginx"
 
+  # A Docker build ENV
+  IMAGE_NAME: "nginx"
+  IMAGE_DESTINATION: "plcnext/nginx"
+  IMAGE_TAG: "1.24"
+
+
+  # Build specific Variables
   # arm env
   ENV_FILE_ARM: "arm\/.env"
 
   # x86 env
   ENV_FILE_X86: "x86\/.env"
 
-  # A Docker build ENV
-  IMAGE_NAME: "nginx"
-  IMAGE_DESTINATION: "plcnext/nginx"
-  IMAGE_TAG: ${CONTAINER_TAG}
+ 
 
 
 # Build stages
@@ -99,7 +100,7 @@ build_new_image:x86:
       --tarPath ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
     - gzip ./${IMAGE_NAME}-${CI_COMMIT_SHA}.tar
   allow_failure: false
-  when: manual
+  when: always
   tags:
     - shared-runner-kubernetes
     - multi-arc
@@ -151,10 +152,6 @@ container_new_image:arm32v7:
   tags:
     - shared-runner-kubernetes
     - multi-arc
-  # cache:
-  #   key: kaniko-cache
-  #   paths:
-  #   - ./cache
   dependencies:
   -  build_new_image:arm32v7
 
@@ -200,7 +197,7 @@ container_new_image:x86:
     - chmod +x build_new_image/x86/initscript.sh
     - mksquashfs build_new_image/x86 ${IMAGE_NAME}-${CI_COMMIT_SHORT_SHA}_x86.app -force-uid 1001 -force-gid 1002
   allow_failure: false
-  when: manual
+  when: always
   tags:
     - shared-runner-kubernetes
     - multi-arc

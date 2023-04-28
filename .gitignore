@@ -215,8 +215,3 @@ $RECYCLE.BIN/
 
 # .nfs files are created when an open file is removed but is still being accessed
 .nfs*
-
-
-test
-
-sed -i -e 's/hello_world.*/hello_world='"${test}"'/g' -i -e 's//hello_world='"${test}"'/'  .env

@@ -1,8 +1,0 @@
-version: "3.7"
-services:
-  node-red:
-    image: ${IMAGE_NAME}:${IMAGE_TAG}
-    user: ${USER_ID}
-    volumes:
-      - ./volumes/node-red:/data
-    restart: unless-stopped
