@@ -65,6 +65,10 @@ In order to build such images it has to provide the context for the build proces
 
 Inside this structure you can adapt to your images. If the build process runs on your local machine, it can be run also on the kaniko executer. So you just have to adapt to your own settings and build scene and then it's possible to run on an CI/CD pipeline.
 
+### Download build app
+
+After the build runs through succesfuel. The artifacts can be downloaded. It can be downloaded just under the download button for pipeline over every commit. Every stage that start with container, contains an *.app* compressed within an *.zip* file. ![gitlab artifact download](../images/gitlab-artifact.png)
+
 ## Pipeline structure
 
 The pipeline splits into one stage. The stage is called *container_existing_image* it will download the predefined image, that has been set in [configuration part](#edit-environmental-variables-to-pipeline-configuration)

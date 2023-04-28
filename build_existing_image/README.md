@@ -47,6 +47,10 @@ If you want extend your applications with additional information, normally all t
 
 If you want to extend base images you could mount files. These can be done by adding an new folder (e.g ./arm/volumes and ./x86/volumes) and add these as an mounting volume to the [docker-compose.yml](./arm/docker-compose.yml) file.
 
+### Download build app
+
+After the build runs through succesfuel. The artifacts can be downloaded. It can be downloaded just under the download button for pipeline over every commit. Every stage that start with container, contains an *.app* compressed within an *.zip* file. ![gitlab artifact download](../images/gitlab-artifact.png)
+
 ## Pipeline structure
 
 the pipeline consists of only one stage. The stage is called *container_existing_image* it will download the predefined image, that has been set in [configuration part](#edit-environmental-variables-to-pipeline-configuration) and add neccessary dependecies and afterwards compress it into an *.app* file.
