@@ -48,7 +48,7 @@ The other two folder represents only the two different projects. A description h
 Inside the root folder, there is also an gitlab-ci.yml. Within this file, the build process for CI/CD Gitlab is handled there.
 
 ## Usage
-If you want to use this project. The easiest way is to enable CI/CD Pipeline within Gitlab and to have installed MultiArc runner.
+If you want to use this project the easiest way is to enable CI/CD Pipeline within Gitlab and to have installed MultiArc runner.
 Then it will run through the pipeline. And you can develop your own instance and customized projects.
 
 ## Support
