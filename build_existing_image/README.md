@@ -25,7 +25,7 @@ An PLCnext app needs the app_info.json as information for the plcnext runtime. I
 1. `APP_VERSION` is the displayed version number in the web based managment app section (The appversion on the *[plcnextstore](https://plcnextstore.com)* must be set seperat on the app configuration via *[plcnextstore](https://plcnextstore.com)*).
 2. `MINFIRMWARE_VERSION` sets the executable minimum firmware version.
 3. `APP_NAME` is the displayed and overall used Name inside the app and on the running system.
-4. `LICENSE_TYPE` it can be set to activate an licensing function. 
+4. `LICENSE_TYPE` it can be set to activate an licensing function.
 5. `MANUFACTOR` you can set your name or your company name. It will be represenet on the web based managment.
 6. `LINUXDAEMON_PATH` these path is preconfigured, if no additional script is needed, these settings can be retained(it's needed that the app can be executed). The script that will be executed is an empty placeholder.
 7. Different version between x86 and arm architecture:
