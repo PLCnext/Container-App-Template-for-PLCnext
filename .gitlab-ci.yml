@@ -53,7 +53,7 @@ test_github:
     name: ubuntu:latest
     entrypoint: [""]
   script:
-    - apt update -y
+    - apt update -y && apt install -y ping curl git
     - ping https://github.com/PLCnext/Container-App-Template-for-PLCnext.git
     - curl https://github.com/PLCnext/Container-App-Template-for-PLCnext.git
     - git clone https://github.com/PLCnext/Container-App-Template-for-PLCnext.git
