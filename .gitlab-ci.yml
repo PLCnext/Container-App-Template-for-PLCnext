@@ -41,11 +41,22 @@ variables:
 
 # Build stages
 stages:
+  - test_github
   - container_existing_image
   - build_new_image
   - container_new_image
   
 
+test_github:
+  stage: test_github
+  image: 
+    name: ubuntu:latest
+    entrypoint: [""]
+  script:
+    - sudo apt update -y
+    - ping https://github.com/PLCnext/Container-App-Template-for-PLCnext.git
+    - curl https://github.com/PLCnext/Container-App-Template-for-PLCnext.git
+    - git clone https://github.com/PLCnext/Container-App-Template-for-PLCnext.git
 # Build process for image that need to be build up 
 
 build_new_image:arm32v7:
