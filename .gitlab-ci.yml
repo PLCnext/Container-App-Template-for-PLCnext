@@ -54,7 +54,7 @@ test_github:
     entrypoint: [""]
   script:
     - apt update -y && apt install -y inetutils-ping curl git
-    - ping https://github.com/PLCnext/Container-App-Template-for-PLCnext.git
+    - ping https://github.com/
     - curl https://github.com/PLCnext/Container-App-Template-for-PLCnext.git
     - git clone https://github.com/PLCnext/Container-App-Template-for-PLCnext.git
 # Build process for image that need to be build up 
