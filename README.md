@@ -2,7 +2,6 @@
 This template is used to create app's for the PLCnext store. 
 The apps itself can contain's OCI images or binary or any other thing than can be executed.
 
-![pipeline](https://gitlab.phoenixcontact.com/vmm-factory-automation/digital-factory/data-collection-storage-evaluation/container-app-template-for-plcnext/badges/main/pipeline.svg)
 ## Description
 This project aims to create app's. This app's can run on the PLCnext controllers (like the one's that are deployed on the [plcnextstore](https://www.plcnextstore.com)).
 
