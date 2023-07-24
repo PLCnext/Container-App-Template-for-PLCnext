@@ -229,12 +229,12 @@ container_existing_image:amd64:
     # set Bash executable
     - chmod +x scripts/replace_or_add_string.sh
     # set ENV
-    - sed -i -e 's/NAME=.*/NAME='"${APP_NAME}"'/g' -e '$ a NAME='"${APP_NAME}" build_new_image/${ENV_FILE_X86}
+    - sed -i -e 's/NAME=.*/NAME='"${APP_NAME}"'/g' -e '$ a NAME='"${APP_NAME}" build_existing_image/${ENV_FILE_X86}
     - scripts/replace_or_add_string.sh build_existing_image/${ENV_FILE_X86} 'IMAGE_NAME' "IMAGE_NAME=${IMAGE_NAME}"
     - scripts/replace_or_add_string.sh build_existing_image/${ENV_FILE_X86} 'IMAGE_TAG' "IMAGE_TAG=${IMAGE_TAG}"
     - scripts/replace_or_add_string.sh build_existing_image/${ENV_FILE_X86} 'IMAGE_FILE_NAME' "IMAGE_FILE_NAME=${IMAGE_FILE_NAME}"
 
-    - cat build_new_image/${ENV_FILE_ARM}
+    - cat build_existing_image/${ENV_FILE_ARM}
     # download Docker images to store for local installation and 
     - chmod +x ./scripts/download-frozen-image-v2.sh
     
